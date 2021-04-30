@@ -74,28 +74,63 @@ function addZero(n) {
   return (parseInt(n, 10) < 10 ? '0' : '') + n;
 }
 
-// Set Background and Greeting
+const base = './images/';
+const images = ['01.jpg', '02.jpg', '03.jpg', '05.jpg', '06.jpg', '07.jpg', '08.jpg', '09.jpg', '10.jpg', '11.jpg', '12.jpg', '13.jpg', '14.jpg', '15.jpg', '16.jpg', '17.jpg', '18.jpg', '19.jpg', '20.jpg'];
+let timeday;
+let i = 0;
+const body = document.querySelector('body');
+const btn = document.querySelector('.btn');
+
+function viewBgImage(src) {  
+  const img = new Image();
+  img.src = src;
+  img.onload = () => {      
+    body.style.backgroundImage = `url(${src})`;
+  }; 
+}
+
+function getImage() {
+  const index = i % images.length;
+  const imageSrc = base + timeday + images[index];
+  viewBgImage(imageSrc);
+  i++;
+  btn.disabled = true;
+  setTimeout(function() { btn.disabled = false }, 1000);
+  setTimeout(getImage, 3600000);
+  
+} 
+btn.addEventListener('click', getImage);
+
+// Set Greeting
 function setBgGreet() {
   let today = new Date(),
     hour = today.getHours();
-
-  if (hour < 12) {
+    
+  if (6 < hour && hour <= 12) {
     // Morning
-    document.body.style.backgroundImage =
-      "url('https://i.ibb.co/7vDLJFb/morning.jpg')";
     greeting.textContent = 'Good Morning, ';
-  } else if (hour < 18) {
+    timeday="morning/";
+    document.body.style.color = 'white';
+  } else if (12 < hour && hour <= 18) {
     // Afternoon
-    document.body.style.backgroundImage =
-      "url('https://i.ibb.co/3mThcXc/afternoon.jpg')";
     greeting.textContent = 'Good Afternoon, ';
-  } else {
+    timeday="day/";
+    document.body.style.color = 'white';
+  } else if (18 < hour && hour <= 24) {
     // Evening
-    document.body.style.backgroundImage =
-      "url('https://i.ibb.co/924T2Wv/night.jpg')";
+    timeday="Evening/";
     greeting.textContent = 'Good Evening, ';
     document.body.style.color = 'white';
+  } else {
+    //Night
+    //document.body.style.backgroundImage =
+     // "url('')";
+    timeday="Night/";
+    greeting.textContent = 'Good Night, ';
+    document.body.style.color = 'white';   
   }
+    
+  setTimeout(showTime, 60000);
 }
 
 // Get Name
@@ -150,5 +185,6 @@ focus.addEventListener('blur', setFocus);
 // Run
 showTime();
 setBgGreet();
+getImage();
 getName();
 getFocus();
