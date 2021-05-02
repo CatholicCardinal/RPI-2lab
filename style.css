@@ -19,7 +19,11 @@ body {
   background-position: center center;
   background-image: url("F:\Program_works\RPI lab2\RPI-2lab\images\day\01.png");  
   transition: background-image 1s ease-in-out;
+  height: auto;
+  width: 100%;
+  text-align: center;
 }
+
 
 .btn {
   width: 60px;
@@ -49,6 +53,7 @@ body {
 
 h1 {
   margin-bottom: 3rem;
+  display: inline;
 }
 
 h2 {
@@ -60,4 +65,8 @@ h2 {
   .time {
     font-size: 6rem;
   }
+}
+
+.weather{
+    display: inline;
 }

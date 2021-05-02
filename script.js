@@ -2,7 +2,8 @@
 const time = document.querySelector('.time'),
   greeting = document.querySelector('.greeting'),
   name = document.querySelector('.name'),
-  focus = document.querySelector('.focus');
+  focus = document.querySelector('.focus'),
+  city =    document.querySelector('.city');
 
 // Options
 const showAmPm = true;
@@ -30,7 +31,7 @@ function showTime() {
       break;
       case 6: dayofweek="Суббота";
       break;
-      case 7: dayofweek="Воскресенье";
+      case 0: dayofweek="Воскресенье";
       break;
   }
    
@@ -129,8 +130,12 @@ function setBgGreet() {
     greeting.textContent = 'Good Night, ';
     document.body.style.color = 'white';   
   }
-    
+  i =getRandomInt(1, 20);  
   setTimeout(showTime, 60000);
+}
+//random
+function getRandomInt(min, max) {
+  return Math.floor(Math.random() * (max - min)) + min;
 }
 
 // Get Name
@@ -145,13 +150,22 @@ function getName() {
 // Set Name
 function setName(e) {
   if (e.type === 'keypress') {
+      if((e.which == 13 || e.keyCode == 13) && e.target.innerText.length===0) {
+          getName();
+          name.blur();
+      }
     // Make sure enter is pressed
-    if (e.which == 13 || e.keyCode == 13) {
-      localStorage.setItem('name', e.target.innerText);
-      name.blur();
+    if ((e.which == 13 || e.keyCode == 13) && e.target.innerText.length!==0) {
+        localStorage.setItem('Name', e.target.innerText);
+        name.blur();
     }
   } else {
-    localStorage.setItem('name', e.target.innerText);
+    if (e.target.innerText.length===0){
+
+        getName();
+    }
+      else{
+        localStorage.setItem('name', e.target.innerText);}
   }
 }
 
@@ -167,24 +181,111 @@ function getFocus() {
 // Set Focus
 function setFocus(e) {
   if (e.type === 'keypress') {
+      if((e.which == 13 || e.keyCode == 13) && e.target.innerText.length===0) {
+          getFocus();
+          focus.blur();
+      }
     // Make sure enter is pressed
-    if (e.which == 13 || e.keyCode == 13) {
-      localStorage.setItem('focus', e.target.innerText);
-      focus.blur();
+    if ((e.which == 13 || e.keyCode == 13) && e.target.innerText.length!==0) {
+        localStorage.setItem('focus', e.target.innerText);
+        focus.blur();
     }
   } else {
-    localStorage.setItem('focus', e.target.innerText);
+    if (e.target.innerText.length===0){
+
+        getFocus();
+    }
+      else{
+        localStorage.setItem('focus', e.target.innerText);}
   }
 }
+
+// Get City
+function getCity() {
+  if (localStorage.getItem('city') === null) {
+    city.textContent = '[Enter City]';
+  } else {
+    city.textContent = localStorage.getItem('city');
+  }
+}
+
+function onFocus(){
+    city.addEventListener('focus', ()=>{
+        city.innerHTML = '';
+    });
+    name.addEventListener('focus', ()=>{
+        name.innerHTML = '';
+    });
+    focus.addEventListener('focus', ()=>{
+        focus.innerHTML = '  _  ';
+    });
+}
+// Set City
+function setCity(e) {
+  if (e.type === 'keypress') {
+      if((e.which == 13 || e.keyCode == 13) && e.target.innerText.length===0) {
+          getCity();
+          getWeather();
+          city.blur();
+      }
+    // Make sure enter is pressed
+    if ((e.which == 13 || e.keyCode == 13) && e.target.innerText.length!==0) {
+        localStorage.setItem('city', e.target.innerText);
+        getWeather();
+        city.blur();
+    }
+  } else {
+    if (e.target.innerText.length===0){
+
+        getCity();
+        getWeather();
+    }
+      else{
+        localStorage.setItem('city', e.target.innerText);}
+        getWeather();
+  }
+}
+
+
 
 name.addEventListener('keypress', setName);
 name.addEventListener('blur', setName);
 focus.addEventListener('keypress', setFocus);
 focus.addEventListener('blur', setFocus);
+city.addEventListener('keypress', setCity);
+city.addEventListener('blur', setCity);
+
+
+const weatherIcon = document.querySelector('.weather-icon');
+const temperature = document.querySelector('.temperature');
+const weatherDescription = document.querySelector('.weather-description');
+const wind = document.querySelector('.wind-speed');
+const water = document.querySelector('.water');
+
+async function getWeather() {
+  const url = `https://api.openweathermap.org/data/2.5/weather?q=${city.textContent}&lang=ru&appid=334ecb3cbf88a1711f9e50e8e0c26de9&units=metric`;
+  const res = await fetch(url);
+  const data = await res.json();
+  
+  console.log(data);
+  try {
+  weatherIcon.classList.add(`owf-${data.weather[0].id}`);
+  temperature.textContent = `${data.main.temp}°C`;
+  weatherDescription.textContent = data.weather[0].description;
+  wind.textContent = data.wind.speed;
+  water.textContent = data.main.humidity;
+  } catch {
+      temperature.textContent = `неправильное местоположение`;
+  }
+}
+
 
 // Run
 showTime();
 setBgGreet();
 getImage();
 getName();
+getCity();
+getWeather();
 getFocus();
+onFocus();
