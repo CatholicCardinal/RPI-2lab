@@ -5,8 +5,12 @@ const time = document.querySelector('.time'),
   focus = document.querySelector('.focus'),
   city =    document.querySelector('.city');
 
-// Options
-const showAmPm = true;
+const dayofweek1 = document.querySelector('.dayofweek');
+const mounth1 = document.querySelector('.mounth');
+const day1 = document.querySelector('.day');
+const hour1 = document.querySelector('.hour');
+const min1 = document.querySelector('.min');
+const sec1 = document.querySelector('.sec');
 
 // Show Time
 function showTime() {
@@ -63,10 +67,13 @@ function showTime() {
   }
 
   // Output Time
-  time.innerHTML = `${dayofweek}<span>, </span>${day}<span> </span>${mounth}<span> </span>${hour}<span>:</span>${addZero(min)}<span>:</span>${addZero(
-    sec
-  )}`;
-
+  dayofweek1.textContent = dayofweek;
+  mounth1.textContent = mounth;
+  day1.textContent = day;
+  hour1.textContent = hour;
+  min1.textContent = addZero(min);
+  sec1.textContent = addZero(sec);
+  
   setTimeout(showTime, 1000);
 }
 
